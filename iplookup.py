@@ -10,6 +10,8 @@ import os
 import urllib
 import argparse
 from netaddr import IPSet, AddrFormatError
+from joblib import Parallel, delayed
+import json
 
 
 PARSER = argparse.ArgumentParser()
@@ -27,7 +29,6 @@ TORCSV = 'Tor_ip_list_ALL.csv'
 TORFILE = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
 SUBNET = 0
 INPUTDICT = {}
-RTNDICT = []
 OUTFILE = 'IP-lookup-output-22.csv'
 CSVCOLS = ["ip-address", "asn", "as-name", "isp", "abuse-1", "abuse-2",
            "abuse-3", "domain", "reverse-dns", "type", "country", "lat",
@@ -118,7 +119,6 @@ def mainlookup(var):
     elif INPUTDICT.get("ip-address") == var:
         print 'Found in previous lookup'
     else:
-        print 'Full lookup ahoy!'
         try:
             socket.inet_aton(var)
         except socket.error:
@@ -166,27 +166,23 @@ def mainlookup(var):
             'long': location[1]
         }
     INPUTDICT['ip-address'] = var
-    RTNDICT.append(INPUTDICT)
+
+    out = json.dumps(
+        INPUTDICT,
+        indent=4,
+        sort_keys=True,
+        ensure_ascii=False)
+    print out
 
 
 def batch(inputfile):
     """Handles batch lookups using file based input"""
-    tcount = 0
-    lcount = 0
     if os.path.isfile("IP-lookup-output.csv"):
         os.remove("IP-lookup-output.csv")
 
-    with open(inputfile) as fhandlea:
-        for line in fhandlea:
-            if line.strip():
-                tcount += 1
-
     with open(inputfile) as fhandle:
-        for line in fhandle:
-            lcount += 1
-            print "Processing line " + str(lcount) + " of " + str(tcount)
-            mainlookup(line.rstrip('\n'))
-        writedicttocsv(OUTFILE, CSVCOLS, RTNDICT)
+        Parallel(n_jobs=100)(delayed(mainlookup)(i.rstrip('\n'))
+                             for i in fhandle)
 
 
 def single(lookupvar):
