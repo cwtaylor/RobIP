@@ -115,9 +115,9 @@ def mainlookup(var):
     global INPUTDICT
     var = ''.join(var.split())
     if iprange(var, SUBNET) is True:
-        print SUBNET
+        print
     elif INPUTDICT.get("ip-address") == var:
-        print 'Found in previous lookup'
+        print
     else:
         try:
             socket.inet_aton(var)
@@ -172,7 +172,7 @@ def mainlookup(var):
         indent=4,
         sort_keys=True,
         ensure_ascii=False)
-    print out
+    csvout(INPUTDICT)
 
 
 def batch(inputfile):
@@ -190,57 +190,26 @@ def single(lookupvar):
     mainlookup(lookupvar)
 
 
-def writedicttocsv(csv_file, csv_columns, dict_data):
-    try:
-        with open(csv_file, 'w') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
-            writer.writeheader()
-            for data in dict_data:
-                writer.writerow(data)
-    except IOError as (errno, strerror):
-        print("I/O error({0}): {1}".format(errno, strerror))
-    return
-
-
 def csvout(inputdict):
     """Generates a CSV file from the output inputdict"""
-    fhandle = open("IP-lookup-output.csv", "a+")
-    try:
-        csv.Sniffer().has_header(fhandle.read())
-    except csv.Error:
-        writer = csv.writer(fhandle, quoting=csv.QUOTE_ALL)
-        writer.writerow((
-            "AddrIP",
-            "ASN",
-            "AS Name",
-            "ISP",
-            "Abuse-1",
-            "Abuse-2",
-            "Abuse-3",
-            "Domain",
-            "Reverse DNS",
-            "Type",
-            "Country",
-            "Lat",
-            "Long",
-            "TOR"))
+    fhandle = open("IP-lookup-output.csv", "a")
     try:
         writer = csv.writer(fhandle, quoting=csv.QUOTE_ALL)
         writer.writerow((
-            inputdict[0]['ip-address'],
-            inputdict[0]['asn'],
-            inputdict[0]['as-name'],
-            inputdict[0]['isp'],
-            inputdict[0]['abuse-contacts']['abuse-1'],
-            inputdict[0]['abuse-contacts']['abuse-2'],
-            inputdict[0]['abuse-contacts']['abuse-3'],
-            inputdict[0]['domain'],
-            inputdict[0]['reverse-dns'],
-            inputdict[0]['type'],
-            inputdict[0]['country'],
-            inputdict[0]['location']['coordinates']['lat'],
-            inputdict[0]['location']['coordinates']['long'],
-            inputdict[0]['tor-node']))
+            inputdict['ip-address'],
+            inputdict['asn'],
+            inputdict['as-name'],
+            inputdict['isp'],
+            inputdict['abuse-1'],
+            inputdict['abuse-2'],
+            inputdict['abuse-3'],
+            inputdict['domain'],
+            inputdict['reverse-dns'],
+            inputdict['type'],
+            inputdict['country'],
+            inputdict['lat'],
+            inputdict['long'],
+            inputdict['tor-node']))
     finally:
         fhandle.close()
 
