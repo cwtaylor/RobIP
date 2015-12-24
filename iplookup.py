@@ -24,7 +24,7 @@ PARSER.add_argument("-v",
                     help="The value of the request")
 ARGS = PARSER.parse_args()
 TORCSV = 'Tor_ip_list_ALL.csv'
-# SECCSV = csv.reader(open('idLookup.csv', 'rb'), delimiter=',', quotechar="\"")
+TORFILE = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
 SUBNET = 0
 INPUTDICT = {}
 RTNDICT = []
@@ -85,7 +85,7 @@ def flookup(value, fname):
     except IOError:
         testfile = urllib.URLopener()
         testfile.retrieve(
-            "http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv",
+            TORFILE,
             "Tor_ip_list_ALL.csv")
         fhandle = open(fname)
     search = mmap.mmap(fhandle.fileno(), 0, access=mmap.ACCESS_READ)
@@ -97,7 +97,6 @@ def flookup(value, fname):
 
 def iprange(sample, sub):
     """Identifies if the given ip address is in the previous range"""
-    # print "'" + str(sample) + "' -- '" + str(sub) + "'"
     if sub is not 0 and not '212.219.0.0/16':
         try:
             ipset = IPSet([sub])
