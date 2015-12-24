@@ -248,9 +248,14 @@ def csvout(inputdict):
     finally:
         fhandle.close()
 
-if ARGS.t == "single":
-    single(ARGS.v)
-elif ARGS.t == "batch":
-    batch(ARGS.v)
-else:
-    PARSER.print_help()
+
+def main():
+    if ARGS.t == "single":
+        single(ARGS.v)
+    elif ARGS.t == "batch":
+        batch(ARGS.v)
+    else:
+        PARSER.print_help()
+
+if __name__ == "__main__":
+    main()
