@@ -10,7 +10,6 @@ import os
 import urllib
 import argparse
 from netaddr import IPSet, AddrFormatError
-# import json
 
 
 PARSER = argparse.ArgumentParser()
@@ -96,35 +95,6 @@ def flookup(value, fname):
         return 'false'
 
 
-# def func1(vara):
-#     print "selector: " + vara
-#     x = 0
-#     for row in SECCSV:
-#         value = row[0]
-#         print value
-#         if value == vara:
-#             rv = row[1]
-#             return rv
-#         else:
-#             return "Other"
-#         x = x + 1
-
-
-# def slookup(vara):
-#     print "selector: " + vara
-#     x = 0
-#     for row in SECCSV:
-#         print x
-#         value = row[0]
-#         if value == vara:
-#             print "result: " + value
-#             return row[1]
-#         else:
-#             print "result: Other"
-#             return "Other"
-#         x = x + 1
-
-
 def iprange(sample, sub):
     """Identifies if the given ip address is in the previous range"""
     # print "'" + str(sample) + "' -- '" + str(sub) + "'"
@@ -144,15 +114,8 @@ def mainlookup(var):
     global SUBNET
     global INPUTDICT
     var = ''.join(var.split())
-    # print(INPUTDICT.get("ip-address"))
     if iprange(var, SUBNET) is True:
         print SUBNET
-        # try:
-        #     rdns = socket.gethostbyaddr(var)
-        # except socket.herror:
-        #     rdns = "-"
-        # print 'Found in previous range'
-        print
     elif INPUTDICT.get("ip-address") == var:
         print 'Found in previous lookup'
     else:
@@ -186,17 +149,6 @@ def mainlookup(var):
 
         tor = flookup(var, TORCSV)
 
-        # print slookup("BT")
-        # print func1("BT")
-        # category = slookup(origin[4])
-        # if category is "Other":
-        #     category = slookup(str(origin[5]))
-
-        # print sector
-
-        # category = identify(origin[4])
-        # if category is "Other":
-        #     category = identify(str(rdns[0]))
         category = 'blank'
         INPUTDICT = {
             'ip-address': var,
@@ -215,10 +167,7 @@ def mainlookup(var):
             'long': location[1]
         }
     INPUTDICT['ip-address'] = var
-
-    # print json.dumps(INPUTDICT, sort_keys=True, indent=4, ensure_ascii=False)
     RTNDICT.append(INPUTDICT)
-    # csvout(INPUTDICT)
 
 
 def batch(inputfile):
@@ -299,10 +248,6 @@ def csvout(inputdict):
             inputdict[0]['tor-node']))
     finally:
         fhandle.close()
-
-# OPTIONS = {'single': single, 'batch': batch}
-
-# OPTIONS[OPT](IP)
 
 if ARGS.t == "single":
     single(ARGS.v)
