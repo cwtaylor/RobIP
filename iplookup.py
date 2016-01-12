@@ -40,30 +40,20 @@ CSVCOLS = ["ip-address", "asn", "as-name", "isp", "abuse-1", "abuse-2",
 
 def identify(value):
     """This function returns a value based on the value given"""
-    if ("ac.uk") in value:
+    if "ac.uk" or ".edu" or "School" or ".sch.uk" in value:
         category = 'Academia'
-    elif (".edu") in value:
-        category = "Academia"
-    elif ".gov.uk" in value:
+    elif ".gov.uk" or "council" or ".gov" or "hmrc" in value:
         category = "Government"
-    elif ".gov" in value:
-        category = "Government"
-    elif "council" in value:
-        category = "Local Government"
-    elif "School" in value:
-        category = "Academia"
-    elif ".mil" in value:
-        category = "Military"
-    elif ".mod.uk" in value:
-        category = "Military"
-    elif ".nhs.uk" in value:
-        category = "NHS"
-    elif ".nhs.net" in value:
-        category = "NHS"
-    elif ".sch.uk" in value:
-        category = "Academia"
-    elif "hmrc" in value:
-        category = "HMRC"
+    elif ".mil" or ".mod.uk" in value:
+        category = "Defence"
+    elif ".nhs.uk" or "nhs.net" in value:
+        category = "Health"
+    elif "paypal" or "santander" or "barclays" in value:
+        category = "Financial Services"
+    elif "bbc" or "bt" or "bt" in value:
+        category = "Communications"
+    elif "tfl" in value:
+        category = "Transport"
     else:
         category = 'Other'
     return category
