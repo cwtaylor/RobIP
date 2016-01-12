@@ -29,6 +29,7 @@ TORCSV = 'Tor_ip_list_ALL.csv'
 TORFILE = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
 SUBNET = 0
 INPUTDICT = {}
+GLOBDICT = {}
 OUTFILE = 'IP-lookup-output-22.csv'
 CSVCOLS = ["ip-address", "asn", "as-name", "isp", "abuse-1", "abuse-2",
            "abuse-3", "domain", "reverse-dns", "type", "country", "lat",
@@ -113,6 +114,7 @@ def mainlookup(var):
     """Wraps the main lookup and generated the dictionary"""
     global SUBNET
     global INPUTDICT
+    global GLOBDICT
     var = ''.join(var.split())
     if iprange(var, SUBNET) is True:
         print
@@ -150,20 +152,20 @@ def mainlookup(var):
 
         category = 'blank'
         INPUTDICT = {
-            'ip-address': var,
-            'asn': origin[0],
-            'tor-node': tor,
             'abuse-1': contactlist[0],
             'abuse-2': contactlist[1],
             'abuse-3': contactlist[2],
             'as-name': origin[2],
-            'isp': origin[5],
-            'domain': origin[4],
-            'reverse-dns': str(rdns[0]),
-            'type': category,
+            'asn': origin[0],
             'country': country,
+            'descr': origin[5],
+            'domain': origin[4],
+            'ip-address': var,
             'lat': location[0],
-            'long': location[1]
+            'long': location[1],
+            'reverse-dns': str(rdns[0]),
+            'tor-node': tor,
+            'type': category,
         }
     INPUTDICT['ip-address'] = var
 
@@ -173,6 +175,7 @@ def mainlookup(var):
         sort_keys=True,
         ensure_ascii=False)
     csvout(INPUTDICT)
+    print out
 
 
 def batch(inputfile):
@@ -187,7 +190,8 @@ def batch(inputfile):
 
 def single(lookupvar):
     """Caries out a single IP lookup"""
-    mainlookup(lookupvar)
+    result = mainlookup(lookupvar)
+    return result
 
 
 def csvout(inputdict):
@@ -199,7 +203,7 @@ def csvout(inputdict):
             inputdict['ip-address'],
             inputdict['asn'],
             inputdict['as-name'],
-            inputdict['isp'],
+            inputdict['descr'],
             inputdict['abuse-1'],
             inputdict['abuse-2'],
             inputdict['abuse-3'],
