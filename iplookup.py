@@ -8,6 +8,7 @@ import socket
 import csv
 import os
 import urllib
+from IPy import IP
 import argparse
 from netaddr import IPSet, AddrFormatError
 from joblib import Parallel, delayed
@@ -116,56 +117,64 @@ def mainlookup(var):
     global INPUTDICT
     global GLOBDICT
     var = ''.join(var.split())
-    if iprange(var, SUBNET) is True:
-        print
-    elif INPUTDICT.get("ip-address") == var:
-        print
-    else:
-        try:
-            socket.inet_aton(var)
-        except socket.error:
-            var = socket.gethostbyname(var)
-        contactlist = []
-        rvar = '.'.join(reversed(str(var).split(".")))
-
-        origin = lookup(rvar + '.origin.asn.shadowserver.org')
-        SUBNET = origin[1]
-
-        contact = lookup(rvar + '.abuse-contacts.abusix.org')
-        contactlist = str(contact[0]).split(",")
-
-        contactlist.extend(["-"] * (4 - len(contactlist)))
-        try:
-            rdns = socket.gethostbyaddr(var)
-        except socket.herror:
-            rdns = "-"
-
-        match = geolite2.lookup(var)
-        if match is None or match.location is None:
-            country = ''
-            location = ["", ""]
+    if IP(var).iptype() != 'PRIVATE':
+        if iprange(var, SUBNET) is True:
+            print
+        elif INPUTDICT.get("ip-address") == var:
+            print
         else:
-            country = match.country
-            location = match.location
+            try:
+                socket.inet_aton(var)
+            except socket.error:
+                var = socket.gethostbyname(var)
+            contactlist = []
+            rvar = '.'.join(reversed(str(var).split(".")))
 
-        tor = flookup(var, TORCSV)
+            origin = lookup(rvar + '.origin.asn.shadowserver.org')
+            SUBNET = origin[1]
 
-        category = 'blank'
+            contact = lookup(rvar + '.abuse-contacts.abusix.org')
+            contactlist = str(contact[0]).split(",")
+
+            contactlist.extend(["-"] * (4 - len(contactlist)))
+            try:
+                rdns = socket.gethostbyaddr(var)
+            except socket.herror:
+                rdns = "-"
+
+            match = geolite2.lookup(var)
+            if match is None or match.location is None:
+                country = ''
+                location = ["", ""]
+            else:
+                country = match.country
+                location = match.location
+
+            tor = flookup(var, TORCSV)
+
+            category = 'blank'
+            INPUTDICT = {
+                'abuse-1': contactlist[0],
+                'abuse-2': contactlist[1],
+                'abuse-3': contactlist[2],
+                'as-name': origin[2],
+                'asn': origin[0],
+                'country': country,
+                'descr': origin[5],
+                'domain': origin[4],
+                'ip-address': var,
+                'lat': location[0],
+                'long': location[1],
+                'reverse-dns': str(rdns[0]),
+                'tor-node': tor,
+                'sector': category,
+            }
+    else:
         INPUTDICT = {
-            'abuse-1': contactlist[0],
-            'abuse-2': contactlist[1],
-            'abuse-3': contactlist[2],
-            'as-name': origin[2],
-            'asn': origin[0],
-            'country': country,
-            'descr': origin[5],
-            'domain': origin[4],
-            'ip-address': var,
-            'lat': location[0],
-            'long': location[1],
-            'reverse-dns': str(rdns[0]),
-            'tor-node': tor,
-            'type': category,
+            'abuse-1': "", 'abuse-2': "", 'abuse-3': "", 'as-name': "",
+            'asn': "", 'country': "", 'descr': "", 'domain': "",
+            'domain-count': "", 'ip-address': var, 'lat': "", 'long': "",
+            'reverse-dns': "", 'tor-node': "", 'sector': "",
         }
     INPUTDICT['ip-address'] = var
 
@@ -209,7 +218,7 @@ def csvout(inputdict):
             inputdict['abuse-3'],
             inputdict['domain'],
             inputdict['reverse-dns'],
-            inputdict['type'],
+            inputdict['sector'],
             inputdict['country'],
             inputdict['lat'],
             inputdict['long'],
