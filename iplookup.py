@@ -12,6 +12,7 @@ from IPy import IP
 import argparse
 from netaddr import IPSet, AddrFormatError
 from joblib import Parallel, delayed
+from dns import resolver, reversename
 import json
 
 
@@ -138,9 +139,10 @@ def mainlookup(var):
 
             contactlist.extend(["-"] * (4 - len(contactlist)))
             try:
-                rdns = socket.gethostbyaddr(var)
-            except socket.herror:
-                rdns = "-"
+                addr = reversename.from_address(var)
+                rdns = str(resolver.query(addr, "PTR")[0])
+            except:
+                rdns = ""
 
             match = geolite2.lookup(var)
             if match is None or match.location is None:
@@ -165,7 +167,7 @@ def mainlookup(var):
                 'ip-address': var,
                 'lat': location[0],
                 'long': location[1],
-                'reverse-dns': str(rdns[0]),
+                'reverse-dns': rdns,
                 'tor-node': tor,
                 'sector': category,
             }
