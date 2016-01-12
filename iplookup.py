@@ -39,45 +39,14 @@ CSVCOLS = ["ip-address", "asn", "as-name", "isp", "abuse-1", "abuse-2",
            "long", "tor-node", "location", "abuse-contacts"]
 
 
-# def identify(value):
-#     """This function returns a value based on the value given"""
-#     if ("ac.uk") in value:
-#         category = 'Academia'
-#     elif (".edu") in value:
-#         category = "Academia"
-#     elif ".gov.uk" in value:
-#         category = "Government"
-#     elif ".gov" in value:
-#         category = "Government"
-#     elif "council" in value:
-#         category = "Government"
-#     elif "School" in value:
-#         category = "Academia"
-#     elif ".mil" in value:
-#         category = "Defence"
-#     elif ".mod.uk" in value:
-#         category = "Defence"
-#     elif ".nhs.uk" in value:
-#         category = "Health"
-#     elif ".nhs.net" in value:
-#         category = "Health"
-#     elif ".sch.uk" in value:
-#         category = "Academia"
-#     elif "hmrc" in value:
-#         category = "Government"
-#     elif "paypal" in value:
-#         category = "Financial Services"
-#     else:
-#         category = 'Other'
-#     return category
-
 def identify(var):
+    result = ""
     with open(SECTOR_CSV) as f:
         root = csv.reader(f)
         for i in root:
             if i[0] in var:
                 result = i[1]
-        return result
+    return result
 
 
 def lookup(value):
@@ -88,7 +57,7 @@ def lookup(value):
             for txt_string in rdata.strings:
                 value = txt_string.replace(" | ", "|")
                 value = value.replace(" |", "|").split("|")
-    except dns.resolver.NXDOMAIN:
+    except:
         value = "-"
     return value
 
@@ -143,7 +112,10 @@ def mainlookup(var):
             rvar = '.'.join(reversed(str(var).split(".")))
 
             origin = lookup(rvar + '.origin.asn.shadowserver.org')
-            SUBNET = origin[1]
+            try:
+                SUBNET = origin[1]
+            except:
+                pass
 
             contact = lookup(rvar + '.abuse-contacts.abusix.org')
             contactlist = str(contact[0]).split(",")
@@ -164,8 +136,10 @@ def mainlookup(var):
                 location = match.location
 
             tor = flookup(var, TORCSV)
-
-            category = identify(origin[4])
+            try:
+                category = identify(origin[4])
+            except:
+                category = ''
             INPUTDICT = {
                 'abuse-1': contactlist[0],
                 'abuse-2': contactlist[1],
@@ -206,8 +180,8 @@ def batch(inputfile):
         os.remove("IP-lookup-output.csv")
 
     with open(inputfile) as fhandle:
-        Parallel(n_jobs=100)(delayed(mainlookup)(i.rstrip('\n'))
-                             for i in fhandle)
+        Parallel(n_jobs=100, verbose=51)(delayed(mainlookup)(i.rstrip('\n'))
+                                         for i in fhandle)
 
 
 def single(lookupvar):
