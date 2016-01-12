@@ -175,7 +175,7 @@ def mainlookup(var):
         sort_keys=True,
         ensure_ascii=False)
     csvout(INPUTDICT)
-    print out
+    print(out)
 
 
 def batch(inputfile):
