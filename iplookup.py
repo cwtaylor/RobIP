@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 """This script performs basic enrichment on a given IP"""
 
-import dns.resolver
-from geoip import geolite2
-import mmap
-import socket
-import csv
-import os
-import urllib
-from IPy import IP
-import argparse
-from netaddr import IPSet, AddrFormatError
-from joblib import Parallel, delayed
 from dns import resolver, reversename
+from geoip import geolite2
+from IPy import IP
+from joblib import Parallel, delayed
+from netaddr import IPSet, AddrFormatError
+import argparse
+import csv
+import dns.resolver
 import json
+import mmap
+import os
+import socket
+import urllib
 
 
 PARSER = argparse.ArgumentParser()
@@ -154,7 +154,7 @@ def mainlookup(var):
 
             tor = flookup(var, TORCSV)
 
-            category = 'blank'
+            category = identify(origin[4])
             INPUTDICT = {
                 'abuse-1': contactlist[0],
                 'abuse-2': contactlist[1],
