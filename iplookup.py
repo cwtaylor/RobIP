@@ -32,43 +32,52 @@ TORFILE = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
 SUBNET = 0
 INPUTDICT = {}
 GLOBDICT = {}
+SECTOR_CSV = 'sector.csv'
 OUTFILE = 'IP-lookup-output-22.csv'
 CSVCOLS = ["ip-address", "asn", "as-name", "isp", "abuse-1", "abuse-2",
            "abuse-3", "domain", "reverse-dns", "type", "country", "lat",
            "long", "tor-node", "location", "abuse-contacts"]
 
 
-def identify(value):
-    """This function returns a value based on the value given"""
-    if ("ac.uk") in value:
-        category = 'Academia'
-    elif (".edu") in value:
-        category = "Academia"
-    elif ".gov.uk" in value:
-        category = "Government"
-    elif ".gov" in value:
-        category = "Government"
-    elif "council" in value:
-        category = "Government"
-    elif "School" in value:
-        category = "Academia"
-    elif ".mil" in value:
-        category = "Defence"
-    elif ".mod.uk" in value:
-        category = "Defence"
-    elif ".nhs.uk" in value:
-        category = "Health"
-    elif ".nhs.net" in value:
-        category = "Health"
-    elif ".sch.uk" in value:
-        category = "Academia"
-    elif "hmrc" in value:
-        category = "Government"
-    elif "paypal" in value:
-        category = "Financial Services"
-    else:
-        category = 'Other'
-    return category
+# def identify(value):
+#     """This function returns a value based on the value given"""
+#     if ("ac.uk") in value:
+#         category = 'Academia'
+#     elif (".edu") in value:
+#         category = "Academia"
+#     elif ".gov.uk" in value:
+#         category = "Government"
+#     elif ".gov" in value:
+#         category = "Government"
+#     elif "council" in value:
+#         category = "Government"
+#     elif "School" in value:
+#         category = "Academia"
+#     elif ".mil" in value:
+#         category = "Defence"
+#     elif ".mod.uk" in value:
+#         category = "Defence"
+#     elif ".nhs.uk" in value:
+#         category = "Health"
+#     elif ".nhs.net" in value:
+#         category = "Health"
+#     elif ".sch.uk" in value:
+#         category = "Academia"
+#     elif "hmrc" in value:
+#         category = "Government"
+#     elif "paypal" in value:
+#         category = "Financial Services"
+#     else:
+#         category = 'Other'
+#     return category
+
+def identify(var):
+    with open(SECTOR_CSV) as f:
+        root = csv.reader(f)
+        for i in root:
+            if i[0] in var:
+                result = i[1]
+        return result
 
 
 def lookup(value):
