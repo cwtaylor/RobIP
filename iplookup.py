@@ -58,7 +58,7 @@ def lookup(value):
                 value = txt_string.replace(" | ", "|")
                 value = value.replace(" |", "|").split("|")
     except:
-        value = "-"
+        value = []
     return value
 
 
@@ -117,8 +117,11 @@ def mainlookup(var):
             except:
                 pass
 
-            contact = lookup(rvar + '.abuse-contacts.abusix.org')
-            contactlist = str(contact[0]).split(",")
+            try:
+                contact = lookup(rvar + '.abuse-contacts.abusix.org')
+                contactlist = str(contact[0]).split(",")
+            except:
+                contactlist = []
 
             contactlist.extend(["-"] * (4 - len(contactlist)))
             try:
@@ -138,8 +141,11 @@ def mainlookup(var):
             tor = flookup(var, TORCSV)
             try:
                 category = identify(origin[4])
+                if category == "":
+                    category = identify(contactList[0])
             except:
                 category = ''
+            origin.extend(["-"] * (6 - len(origin)))
             INPUTDICT = {
                 'abuse-1': contactlist[0],
                 'abuse-2': contactlist[1],
@@ -171,7 +177,7 @@ def mainlookup(var):
         sort_keys=True,
         ensure_ascii=False)
     csvout(INPUTDICT)
-    print(out)
+    # print(out)
 
 
 def batch(inputfile):
@@ -192,7 +198,7 @@ def single(lookupvar):
 
 def csvout(inputdict):
     """Generates a CSV file from the output inputdict"""
-    fhandle = open("IP-lookup-output.csv", "a")
+    fhandle = open(OUTFILE, "a")
     try:
         writer = csv.writer(fhandle, quoting=csv.QUOTE_ALL)
         writer.writerow((
