@@ -1,6 +1,7 @@
 # Project specific - ChrisT
-*.test.csv
-*.output.csv
+*test.csv
+*ALL.csv
+*output.csv
 *test.py
 *.ini
 *.DS_Store
