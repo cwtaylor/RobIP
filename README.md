@@ -5,7 +5,7 @@ Shadowserver is the main source of information for the enrichment process. This 
 
 Currently the following is returned as a JSON blob:
 
-```
+```JSON
 {
     "abuse-1": "abuse@example.org",
     "abuse-2": "abuse2@example.org",
