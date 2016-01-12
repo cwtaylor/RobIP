@@ -28,8 +28,8 @@ Additionally a CSV file is generated from the output.
 
 ## Todo
 - Query TAXII server for values
-- ~Handle sector identification~
-- ~Fix reverse dns lookup~
+- ~~Handle sector identification~~
+- ~~Fix reverse dns lookup~~
 
 ## Dependencies
 The following libraries are required and can be installed with pip.
