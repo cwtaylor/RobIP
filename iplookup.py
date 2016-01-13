@@ -33,7 +33,7 @@ SUBNET = 0
 INPUTDICT = {}
 GLOBDICT = {}
 SECTOR_CSV = 'sector.csv'
-OUTFILE = 'IP-lookup-output-22.csv'
+OUTFILE = 'IPLookup-output.csv'
 CSVCOLS = ["ip-address", "asn", "as-name", "isp", "abuse-1", "abuse-2",
            "abuse-3", "domain", "reverse-dns", "type", "country", "lat",
            "long", "tor-node", "location", "abuse-contacts"]
@@ -98,7 +98,7 @@ def mainlookup(var):
     global INPUTDICT
     global GLOBDICT
     var = ''.join(var.split())
-    if IP(var).iptype() != 'PRIVATE':
+    if IP(var).iptype() != 'PRIVATE' and IP(var).version() == 4:
         if iprange(var, SUBNET) is True:
             print
         elif INPUTDICT.get("ip-address") == var:
@@ -177,7 +177,7 @@ def mainlookup(var):
         sort_keys=True,
         ensure_ascii=False)
     csvout(INPUTDICT)
-    # print(out)
+    print(out)
 
 
 def batch(inputfile):
