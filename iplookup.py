@@ -31,7 +31,6 @@ TORCSV = 'Tor_ip_list_ALL.csv'
 TORFILE = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
 SUBNET = 0
 INPUTDICT = {}
-GLOBDICT = {}
 SECTOR_CSV = 'sector.csv'
 OUTFILE = 'IPLookup-output.csv'
 CSVCOLS = ["ip-address", "asn", "as-name", "isp", "abuse-1", "abuse-2",
@@ -70,7 +69,7 @@ def flookup(value, fname):
         testfile = urllib.URLopener()
         testfile.retrieve(
             TORFILE,
-            "Tor_ip_list_ALL.csv")
+            fname)
         fhandle = open(fname)
     search = mmap.mmap(fhandle.fileno(), 0, access=mmap.ACCESS_READ)
     if search.find(value) != -1:
@@ -81,7 +80,7 @@ def flookup(value, fname):
 
 def iprange(sample, sub):
     """Identifies if the given ip address is in the previous range"""
-    if sub is not 0 and not '212.219.0.0/16':
+    if sub is not 0:
         try:
             ipset = IPSet([sub])
             if sample in ipset:
@@ -96,7 +95,6 @@ def mainlookup(var):
     """Wraps the main lookup and generated the dictionary"""
     global SUBNET
     global INPUTDICT
-    global GLOBDICT
     var = ''.join(var.split())
     if IP(var).iptype() != 'PRIVATE' and IP(var).version() == 4:
         if iprange(var, SUBNET) is True:
@@ -182,8 +180,8 @@ def mainlookup(var):
 
 def batch(inputfile):
     """Handles batch lookups using file based input"""
-    if os.path.isfile("IP-lookup-output.csv"):
-        os.remove("IP-lookup-output.csv")
+    if os.path.isfile(OUTFILE):
+        os.remove(OUTFILE)
 
     with open(inputfile) as fhandle:
         Parallel(n_jobs=100, verbose=51)(delayed(mainlookup)(i.rstrip('\n'))
