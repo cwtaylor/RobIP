@@ -10,6 +10,7 @@
 .parliament.uk,Government
 .police.uk,Emergency Services
 .sch.uk,Academia
+abf.co.uk,Food
 amazonaws.com,Communications
 anglianwater.co.uk,Water
 asc-csa.gc.ca,Space
@@ -20,6 +21,8 @@ bankofscotland.com,Finance
 barclays,Finance
 bba.org.uk,Finance
 bbc,Communications
+bp.com,Energy
+brake.co.uk,Food
 britishairways,Transport
 broadband,Communications
 bt.com,Communications
@@ -56,6 +59,7 @@ lloydsbankinggroup,Finance
 microsoft,Communications
 nationalrail,Transport
 natwest,Finance
+nestle.com,Food
 nhs,Health
 nwl.co.uk,Water
 o2,Communications
@@ -72,6 +76,7 @@ santander,Finance
 sc.com,Finance
 school,Academia
 secure.worldpay.com,Finance
+shell.com,Energy
 sky.com,Communications
 smile.co.uk,Finance
 softlayer,Communications
@@ -96,8 +101,3 @@ wessexwater.co.uk,Water
 yahoo,Communications
 yorkshirewater.com,Water
 zen,Communications
-nestle.com,Food
-abf.co.uk,Food
-shell.com,Energy
-bp.com,Energy
-brake.co.uk,Food
