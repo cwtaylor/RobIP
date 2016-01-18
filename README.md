@@ -33,7 +33,7 @@ Additionally a CSV file is generated from the output.
 - ~~Fix reverse dns lookup~~
 
 ## Dependencies
-The following libraries are required and can be installed with pip.
+The script currently only works on Python2.x and not Python3.x. The following python libraries are required and can be installed with pip.
 - dnspython
 - joblib
 
