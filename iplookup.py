@@ -27,8 +27,8 @@ PARSER.add_argument("-v",
                     metavar="value",
                     help="The value of the request")
 ARGS = PARSER.parse_args()
-TORCSV = 'Tor_ip_list_ALL.csv'
-TORFILE = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
+torcsv = 'Tor_ip_list_ALL.csv'
+sfile = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
 SUBNET = 0
 INPUTDICT = {}
 SECTOR_CSV = 'sector.csv'
@@ -61,14 +61,14 @@ def lookup(value):
     return value
 
 
-def flookup(value, fname):
+def flookup(value, fname, sfile):
     """Looks up a value in a file"""
     try:
         fhandle = open(fname)
     except IOError:
-        testfile = urllib.URLopener()
-        testfile.retrieve(
-            TORFILE,
+        sourceFile = urllib.URLopener()
+        sourceFile.retrieve(
+            sfile,
             fname)
         fhandle = open(fname)
     search = mmap.mmap(fhandle.fileno(), 0, access=mmap.ACCESS_READ)
@@ -136,7 +136,7 @@ def mainlookup(var):
                 country = match.country
                 location = match.location
 
-            tor = flookup(var, TORCSV)
+            tor = flookup(var, torcsv, sfile)
             try:
                 category = identify(origin[4])
                 if category == "":
