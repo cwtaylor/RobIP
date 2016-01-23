@@ -6,7 +6,6 @@ from geoip import geolite2
 from IPy import IP
 from joblib import Parallel, delayed
 from netaddr import IPSet, AddrFormatError
-import argparse
 import csv
 import dns.resolver
 import json
@@ -16,17 +15,6 @@ import socket
 import urllib
 
 
-PARSER = argparse.ArgumentParser()
-PARSER.add_argument("-t",
-                    choices=('single', 'batch'),
-                    required="true",
-                    metavar="request-type",
-                    help="Either single or batch request")
-PARSER.add_argument("-v",
-                    required="true",
-                    metavar="value",
-                    help="The value of the request")
-ARGS = PARSER.parse_args()
 torcsv = 'Tor_ip_list_ALL.csv'
 sfile = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
 SUBNET = 0
@@ -219,6 +207,19 @@ def csvout(inputdict):
 
 
 def main():
+    import argparse
+    PARSER = argparse.ArgumentParser()
+    PARSER.add_argument("-t",
+                        choices=('single', 'batch'),
+                        required="false",
+                        metavar="request-type",
+                        help="Either single or batch request")
+    PARSER.add_argument("-v",
+                        required="false",
+                        metavar="value",
+                        help="The value of the request")
+    ARGS = PARSER.parse_args()
+
     if ARGS.t == "single":
         single(ARGS.v)
     elif ARGS.t == "batch":
