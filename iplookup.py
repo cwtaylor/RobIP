@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """This script performs basic enrichment on a given IP"""
 
-from dns import resolver, reversename
 from geoip import geolite2
 from IPy import IP
 from joblib import Parallel, delayed
