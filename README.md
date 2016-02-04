@@ -1,4 +1,6 @@
 # RobIP
+[![Code Health](https://landscape.io/github/cwtaylor/RobIP/master/landscape.svg?style=flat)](https://landscape.io/github/cwtaylor/RobIP/master)
+
 The RobIP script takes either a single or file of IP addresses and uses various enrichment providers to return useful information regarding an IP address.
 
 Shadowserver is the main source of information for the enrichment process. This process uses their IP-BGP service to return information.
@@ -26,12 +28,6 @@ Currently the following is returned as a JSON blob:
 Additionally a CSV file is generated from the output.
 
 
-## Todo
-- Query a given TAXII server for values
-- Reduce dependencies
-- ~~Handle sector identification~~
-- ~~Fix reverse dns lookup~~
-
 ## Dependencies
 The script currently only works on Python2.x and not Python3.x. The following python libraries are required and can be installed with pip.
 - dnspython
@@ -42,3 +38,6 @@ The script currently only works on Python2.x and not Python3.x. The following py
 ```
 sudo pip install -r requirements.txt
 ```
+
+## License
+See the [LICENSE](LICENSE) file for license rights and limitations (GPLv3).
