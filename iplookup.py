@@ -7,6 +7,7 @@ from joblib import Parallel, delayed
 from netaddr import IPSet, AddrFormatError
 import csv
 import dns.resolver
+import dns.reversename
 import json
 import mmap
 import os
@@ -43,7 +44,7 @@ def lookup(value):
             for txt_string in rdata.strings:
                 value = txt_string.replace(" | ", "|")
                 value = value.replace(" |", "|").split("|")
-    except:
+    except (dns.resolver.NXDOMAIN, dns.resolver.NoNameservers):
         value = []
     return value
 
@@ -97,22 +98,20 @@ def mainlookup(var):
             rvar = '.'.join(reversed(str(var).split(".")))
 
             origin = lookup(rvar + '.origin.asn.shadowserver.org')
-            try:
-                SUBNET = origin[1]
-            except:
-                pass
+
+            SUBNET = origin[1]
 
             try:
                 contact = lookup(rvar + '.abuse-contacts.abusix.org')
                 contactlist = str(contact[0]).split(",")
-            except:
+            except IndexError:
                 contactlist = []
 
             contactlist.extend(["-"] * (4 - len(contactlist)))
             try:
-                addr = reversename.from_address(var)
-                rdns = str(resolver.query(addr, "PTR")[0])
-            except:
+                addr = dns.reversename.from_address(var)
+                rdns = str(dns.resolver.query(addr, "PTR")[0])
+            except (dns.resolver.NXDOMAIN, dns.resolver.NoNameservers):
                 rdns = ""
 
             match = geolite2.lookup(var)
@@ -124,12 +123,11 @@ def mainlookup(var):
                 location = match.location
 
             tor = flookup(var, torcsv, sfile)
-            try:
-                category = identify(origin[4])
-                if category == "":
-                    category = identify(contactList[0])
-            except:
-                category = ''
+
+            category = identify(origin[4])
+            if category == "":
+                category = identify(contactlist[0])
+
             origin.extend(["-"] * (6 - len(origin)))
             INPUTDICT = {
                 'abuse-1': contactlist[0],
@@ -162,7 +160,7 @@ def mainlookup(var):
         sort_keys=True,
         ensure_ascii=False)
     csvout(INPUTDICT)
-    print(out)
+    return out
 
 
 def batch(inputfile):
@@ -220,7 +218,7 @@ def main():
     ARGS = PARSER.parse_args()
 
     if ARGS.t == "single":
-        single(ARGS.v)
+        print(single(ARGS.v))
     elif ARGS.t == "batch":
         batch(ARGS.v)
     else:
