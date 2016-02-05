@@ -1,2 +1,4 @@
 dnspython
 joblib
+python-geoip
+python-geoip-geolite2
