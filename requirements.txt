@@ -2,3 +2,5 @@ dnspython
 joblib
 python-geoip
 python-geoip-geolite2
+netaddr
+ipy
