@@ -1,19 +1,18 @@
-#!/usr/bin/env python
-"""This script performs basic enrichment on a given IP"""
+"""This will perform basic enrichment on a given IP."""
 
-from geoip import geolite2
-from IPy import IP
-from joblib import Parallel, delayed
-from netaddr import IPSet, AddrFormatError
 import csv
-import dns.resolver
-import dns.reversename
 import json
 import mmap
 import os
 import socket
 import urllib
 
+import dns.resolver
+import dns.reversename
+from geoip import geolite2
+from IPy import IP
+from joblib import Parallel, delayed
+from netaddr import AddrFormatError, IPSet
 
 torcsv = 'Tor_ip_list_ALL.csv'
 sfile = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
@@ -37,7 +36,7 @@ def identify(var):
 
 
 def lookup(value):
-    """Performs a dns request on the given value"""
+    """Perform a dns request on the given value."""
     try:
         answers = dns.resolver.query(value, 'TXT')
         for rdata in answers:
@@ -50,7 +49,7 @@ def lookup(value):
 
 
 def flookup(value, fname, sfile):
-    """Looks up a value in a file"""
+    """Look up a value in a file."""
     try:
         fhandle = open(fname)
     except IOError:
@@ -67,7 +66,7 @@ def flookup(value, fname, sfile):
 
 
 def iprange(sample, sub):
-    """Identifies if the given ip address is in the previous range"""
+    """Identify if the given ip address is in the previous range."""
     if sub is not 0:
         try:
             ipset = IPSet([sub])
@@ -80,7 +79,7 @@ def iprange(sample, sub):
 
 
 def mainlookup(var):
-    """Wraps the main lookup and generated the dictionary"""
+    """Wrap the main lookup and generated the dictionary."""
     global SUBNET
     global INPUTDICT
     var = ''.join(var.split())
@@ -164,7 +163,7 @@ def mainlookup(var):
 
 
 def batch(inputfile):
-    """Handles batch lookups using file based input"""
+    """Handle batch lookups using file based input."""
     if os.path.isfile(OUTFILE):
         os.remove(OUTFILE)
 
@@ -174,13 +173,13 @@ def batch(inputfile):
 
 
 def single(lookupvar):
-    """Caries out a single IP lookup"""
+    """Do a single IP lookup."""
     result = mainlookup(lookupvar)
     return result
 
 
 def csvout(inputdict):
-    """Generates a CSV file from the output inputdict"""
+    """Generate a CSV file from the output inputdict."""
     fhandle = open(OUTFILE, "a")
     try:
         writer = csv.writer(fhandle, quoting=csv.QUOTE_ALL)
@@ -223,6 +222,7 @@ def main():
         batch(ARGS.v)
     else:
         PARSER.print_help()
+
 
 if __name__ == "__main__":
     main()
