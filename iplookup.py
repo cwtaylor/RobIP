@@ -211,24 +211,24 @@ def csvout(inputdict):
 
 def main():
     import argparse
-    PARSER = argparse.ArgumentParser()
-    PARSER.add_argument("-t",
+    parser = argparse.Argumentparser()
+    parser.add_argument("-t",
                         choices=('single', 'batch'),
                         required="false",
                         metavar="request-type",
                         help="Either single or batch request")
-    PARSER.add_argument("-v",
+    parser.add_argument("-v",
                         required="false",
                         metavar="value",
                         help="The value of the request")
-    args = PARSER.parse_args()
+    args = parser.parse_args()
 
     if args.t == "single":
         print(single(args.v))
     elif args.t == "batch":
         batch(args.v)
     else:
-        PARSER.print_help()
+        parser.print_help()
 
 
 if __name__ == "__main__":
