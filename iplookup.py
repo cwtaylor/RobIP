@@ -20,9 +20,7 @@ SUBNET = 0
 INPUTDICT = {}
 SECTOR_CSV = 'sector.csv'
 OUTFILE = 'IPLookup-output.csv'
-CSVCOLS = ["ip-address", "asn", "as-name", "isp", "abuse-1", "abuse-2",
-           "abuse-3", "domain", "reverse-dns", "type", "country", "lat",
-           "long", "tor-node", "location", "abuse-contacts"]
+CSVCOLS = '"ip-address","asn","as-name","isp","abuse-1","abuse-2","abuse-3","domain","reverse-dns","type","country","lat","long","tor-node"'
 
 
 def identify(var):
@@ -166,7 +164,12 @@ def batch(inputfile):
     """Handle batch lookups using file based input."""
     if os.path.isfile(OUTFILE):
         os.remove(OUTFILE)
-
+    fhandle = open(OUTFILE, "a")
+    header = 0
+    if header == 0:
+        fhandle.write(str(CSVCOLS) + "\n")
+        header = 1
+    fhandle.close()
     with open(inputfile) as fhandle:
         Parallel(n_jobs=100, verbose=51)(delayed(mainlookup)(i.rstrip('\n'))
                                          for i in fhandle)
@@ -181,6 +184,10 @@ def single(lookupvar):
 def csvout(inputdict):
     """Generate a CSV file from the output inputdict."""
     fhandle = open(OUTFILE, "a")
+    # header = 0
+    # if header == 0:
+    #     fhandle.write("Boop")
+    #     header = 1
     try:
         writer = csv.writer(fhandle, quoting=csv.QUOTE_ALL)
         writer.writerow((
