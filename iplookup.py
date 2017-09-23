@@ -14,8 +14,8 @@ from IPy import IP
 from joblib import Parallel, delayed
 from netaddr import AddrFormatError, IPSet
 
-torcsv = 'Tor_ip_list_ALL.csv'
-sfile = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
+TORCSV = 'Tor_ip_list_ALL.csv'
+SFILE = 'http://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv'
 SUBNET = 0
 INPUTDICT = {}
 SECTOR_CSV = 'sector.csv'
@@ -46,14 +46,14 @@ def lookup(value):
     return value
 
 
-def flookup(value, fname, sfile):
+def flookup(value, fname, SFILE):
     """Look up a value in a file."""
     try:
         fhandle = open(fname)
     except IOError:
         sourceFile = urllib.URLopener()
         sourceFile.retrieve(
-            sfile,
+            SFILE,
             fname)
         fhandle = open(fname)
     search = mmap.mmap(fhandle.fileno(), 0, access=mmap.ACCESS_READ)
@@ -119,7 +119,7 @@ def mainlookup(var):
                 country = match.country
                 location = match.location
 
-            tor = flookup(var, torcsv, sfile)
+            tor = flookup(var, TORCSV, SFILE)
 
             category = identify(origin[4])
             if category == "":
@@ -162,7 +162,7 @@ def mainlookup(var):
 
 def batch(inputfile):
     """Handle batch lookups using file based input."""
-    if os.path.isfile(OUTFILE):
+    if os.path.iSFILE(OUTFILE):
         os.remove(OUTFILE)
     fhandle = open(OUTFILE, "a")
     header = 0
@@ -221,12 +221,12 @@ def main():
                         required="false",
                         metavar="value",
                         help="The value of the request")
-    ARGS = PARSER.parse_args()
+    args = PARSER.parse_args()
 
-    if ARGS.t == "single":
-        print(single(ARGS.v))
-    elif ARGS.t == "batch":
-        batch(ARGS.v)
+    if args.t == "single":
+        print(single(args.v))
+    elif args.t == "batch":
+        batch(args.v)
     else:
         PARSER.print_help()
 
